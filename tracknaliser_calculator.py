@@ -1,6 +1,5 @@
 import numpy as np
 import requests
-
 def json_track_calculator(track_details_dict, multi_stop_journey = False, previous_sample_elevation = 0): #accepts one track only in dict form
 
     flat_fuel_consumption = 0.054
