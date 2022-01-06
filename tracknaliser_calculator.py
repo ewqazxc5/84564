@@ -40,3 +40,14 @@ def json_track_calculator(track_details_dict, multi_stop_journey = False, previo
 
     #print("overall emission from this route", sum(sum_of_emissions), "overall time from this route", sum(sum_of_times), "seconds")
     return [sum(sum_of_emissions),sum(sum_of_times)]
+
+def request_track(start = (0,0), end = (299,299), min_steps_straight = 1, max_steps_straight = -99, n_tracks = 300):
+    start_x = start[0]; start_y=start[1]; end_x = end[0]; end_y=end[1];
+    max_steps_straight = int(min_steps_straight + 5) if max_steps_straight == -99 else max_steps_straight
+    base_url = "http://ucl-rse-with-python.herokuapp.com/road-tracks/tracks/?"
+    user_inputs_url = ["start_point_x=",start_x,"&start_point_y=",start_y,"&end_point_x=",int(end_x),"&end_point_y=",int(end_y),"&min_steps_straight=",min_steps_straight,"&max_steps_straight=",max_steps_straight,"&n_tracks=",n_tracks]
+    user_inputs_url = str(user_inputs_url).replace(",","").replace("[","").replace("]","").replace(" ","").replace("'","")
+    request = str(base_url + user_inputs_url)
+    returned_request = requests.get(request).json()
+    print("Fewer routes available than requested") if returned_request.get("metadata").get("n_tracks") != int(n_tracks) else None
+    return returned_request
