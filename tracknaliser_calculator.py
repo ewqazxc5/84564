@@ -51,3 +51,18 @@ def request_track(start = (0,0), end = (299,299), min_steps_straight = 1, max_st
     returned_request = requests.get(request).json()
     print("Fewer routes available than requested") if returned_request.get("metadata").get("n_tracks") != int(n_tracks) else None
     return returned_request
+
+def sort_results(returned_request, route_criterion = "fast"):
+    results_from_tracks = []
+    results_from_tracks = [json_track_calculator(track) for track in returned_request]
+    fastest_route= sorted(results_from_tracks)[0]; lowest_emission_route = sorted(results_from_tracks,key=lambda x: x[1])[0]
+    print("Lowest emission route", lowest_emission_route)
+    print("Fastest route", fastest_route)
+    eco_route_time = lowest_emission_route[0]; eco_route_emission = lowest_emission_route[1];
+    fast_route_time = fastest_route[0]; fast_route_emission = fastest_route[1]
+    print("Fastest route is also the lowest emission route") if fast_route_time == sorted(results_from_tracks,key=lambda x: x[1])[0][0] else None
+    find_winning_track = np.array(results_from_tracks); i_fast,j_fast = np.where(find_winning_track == fast_route_time); i_eco,j_eco = np.where(find_winning_track == eco_route_emission)
+    return ("Lowest emission route: ", lowest_emission_route, "track number", i_eco[0]) if "eco" in route_criterion else ("Fastest route", fastest_route, "track number", i_fast[0])
+
+returned_request = request_track(end=(133,150), n_tracks = 10).get("tracks")
+print(sort_results(returned_request))
