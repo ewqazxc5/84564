@@ -55,6 +55,8 @@ def request_track(start = (0,0), end = (299,299), min_steps_straight = 1, max_st
 def sort_results(returned_request, route_criterion = "fast"):
     results_from_tracks = []
     results_from_tracks = [json_track_calculator(track) for track in returned_request]
+    # Results are retruned as [time,emission] within a list of lists. 
+    # Sorted method sorts by the first element in a 2d array element, the "key = " is required to sort by the second element.
     fastest_route= sorted(results_from_tracks)[0]; lowest_emission_route = sorted(results_from_tracks,key=lambda x: x[1])[0]
     print("Lowest emission route", lowest_emission_route)
     print("Fastest route", fastest_route)
